@@ -592,6 +592,33 @@ pie(grau_academico_homens_2017, labels = nomeGH2017, main = "porcentagem do Grau
 ##### GRUPOS   #####
 
 
+G1_HM_RACA_2012 <-select()
+G2_HM_RACA_2012 <-select()
+G3_HM_RACA_2012 <-select()
+G4_HM_RACA_2012 <-select()
+G5_HM_RACA_2012 <-select()
+G6_HM_RACA_2012 <-select()
+G7_HM_RACA_2012 <-select()
+G8_HM_RACA_2012 <-select()
+
+
+G1_M_RACA_2012 <-select()
+G2_M_RACA_2012 <-select()
+G3_M_RACA_2012 <-select()
+G4_M_RACA_2012 <-select()
+G5_M_RACA_2012 <-select()
+G6_M_RACA_2012 <-select()
+G7_M_RACA_2012 <-select()
+G8_M_RACA_2012 <-select()
+
+G1_H_RACA_2012 <-select()
+G2_H_RACA_2012 <-select()
+G3_H_RACA_2012 <-select()
+G4_H_RACA_2012 <-select()
+G5_H_RACA_2012 <-select()
+G6_H_RACA_2012 <-select()
+G7_H_RACA_2012 <-select()
+G8_H_RACA_2012 <-select()
 
 
 
