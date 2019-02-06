@@ -1,7 +1,7 @@
 
-setwd("/home/hyuri/Dropbox/Anna")
+setwd("/home/hyuri/Área de Trabalho/Anna")
 
-save.image(file="dmAlunos_last.RData")
+save.image(file="Alunos_last.RData")
 #system.time
 
 
@@ -13,9 +13,9 @@ library(ggplot2)
 
 #carrega os dados do csv selecionado apenas as variáveis que seram usadas, com isso reduz o tamanho do data frame a ser carregado
 
-  #2012
-dados_alunos_2012 <- read.csv.sql(file="/home/hyuri/Dropbox/Anna/microdados_censo_superior_2012/2012/DADOS/DM_ALUNO.CSV",
-                                  sql = "select  CO_CURSO,NO_CURSO, CO_GRAU_ACADEMICO, CO_COR_RACA_ALUNO, DS_COR_RACA_ALUNO, IN_SEXO_ALUNO, DS_SEXO_ALUNO,IN_FINANC_ESTUDANTIL
+#2012
+dados_alunos_2012 <- read.csv.sql(file="/home/hyuri/Área de Trabalho/Anna/microdados_censo_superior_2012/2012/DADOS/DM_ALUNO.CSV",
+                                  sql = "select  CO_CURSO,NO_CURSO, CO_COR_RACA_ALUNO, DS_COR_RACA_ALUNO, IN_SEXO_ALUNO, DS_SEXO_ALUNO,
                                   from file",
                                   header = TRUE, sep ="|")
 
@@ -28,13 +28,13 @@ dados_alunos_2012 <- read.csv.sql(file="/home/hyuri/Dropbox/Anna/microdados_cens
 
 
 #2017
-dados_alunos_2017 <- read.csv.sql(file="/home/hyuri/Dropbox/Anna/microdados_educacao_superior_2017/Microdados_Educacao_Superior_2017/DADOS/DM_ALUNO.CSV",
+dados_alunos_2017 <- read.csv.sql(file="/home/hyuri/Área de Trabalho/Anna/microdados_educacao_superior_2017/Microdados_Educacao_Superior_2017/DADOS/DM_ALUNO.CSV",
                                   sql = "select  CO_CURSO, TP_COR_RACA, TP_SEXO, TP_GRAU_ACADEMICO
                                   from file",header = TRUE, sep ="|")
 
 # Cod. Curso 2017
 
-cod_curso= read.csv.sql("/home/hyuri/Dropbox/Anna/microdados_educacao_superior_2017/Microdados_Educacao_Superior_2017/DADOS/DM_CURSO.CSV", 
+cod_curso= read.csv.sql("/home/hyuri/Área de Trabalho/Anna/microdados_educacao_superior_2017/Microdados_Educacao_Superior_2017/DADOS/DM_CURSO.CSV", 
                         sql = "select CO_CURSO, NO_CURSO from file" ,header = TRUE, sep ="|")
 
 
@@ -73,13 +73,13 @@ dados_2012<-bind_cols(NO_CURSO_2012,dados_alunos_2012)
 
 NOME_CURSO <- cod_curso$NO_CURSO
 
-nome<-iconv(NOME_CURSO, "latin1", "ASCII//TRANSLIT")
+nome <- iconv(NOME_CURSO, "latin1", "ASCII//TRANSLIT")
 
 nome <- as.data.frame(nome)
 
-write.table(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.txt", sep = ";")
+#write.table(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.txt", sep = ";")
 
-write.csv(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.csv")
+#write.csv(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.csv")
 
 summary(dados_2012)
 #NO_CURSO_2012        CO_CURSO         NO_CURSO         CO_GRAU_ACADEMICO CO_COR_RACA_ALUNO DS_COR_RACA_ALUNO  IN_SEXO_ALUNO    DS_SEXO_ALUNO     
@@ -589,11 +589,172 @@ pie(grau_academico_homens_2017, labels = nomeGH2017, main = "porcentagem do Grau
 
 
 
+
+
 ##### GRUPOS   #####
 
+dados_RACA_HM_2012 <- dados_2012 %>% select(NO_CURSO_2012, CO_CURSO, CO_COR_RACA_ALUNO, IN_SEXO_ALUNO)
 
-G1_HM_RACA_2012 <-select()
-G2_HM_RACA_2012 <-select()
+library(readr)
+library(DAAG)
+
+G1_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G1_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+
+str(G1_HM_2012)
+G1_HM_2012 <- as.data.frame(G1_HM_2012)
+summary(G1_HM_2012)
+
+#NO_CURSO_2012         CO_CURSO         NO_CURSO         CO_COR_RACA_ALUNO DS_COR_RACA_ALUNO  IN_SEXO_ALUNO    DS_SEXO_ALUNO     
+#Length:771063      Min.   :      6   Length:771063      Min.   :0.000     Length:771063      Min.   :0.0000   Length:771063     
+#Class :character   1st Qu.:  57707   Class :character   1st Qu.:0.000     Class :character   1st Qu.:1.0000   Class :character  
+#Mode  :character   Median :  94994   Mode  :character   Median :3.000     Mode  :character   Median :1.0000   Mode  :character  
+#Mean   : 175597                      Mean   :2.945                        Mean   :0.9196                     
+#3rd Qu.: 102280                      3rd Qu.:6.000                        3rd Qu.:1.0000                     
+#Max.   :5001097                      Max.   :6.000                        Max.   :1.0000
+
+######## G1 SEXO ######################################################
+
+G1_sexo_aluno_12<- table(G1_HM_2012$IN_SEXO_ALUNO)
+
+sum(G1_HM_2012$IN_SEXO_ALUNO == "1")
+#[1] 709048
+sum(G1_HM_2012$IN_SEXO_ALUNO == "0")
+#[1] 62015
+
+# Sexo 
+# 0. Masculino
+# 1. Feminino
+
+prop.table(G1_sexo_aluno_12)
+#     0          1 
+# 0.08042793 0.91957207 
+
+# Moda
+names(G1_sexo_aluno_12)[which.max(G1_sexo_aluno_12)]
+# 1
+
+# quartis
+quantile(G1_sexo_aluno_12, na.rm = TRUE)
+#   0%      25%      50%      75%     100% 
+#  62015.0 223773.2 385531.5 547289.8 709048.0 
+
+barplot(G1_sexo_aluno_12, border = F ,main = "Distribuição de homens e Mulheres no grupo 1 - 2012", ylab = , col = c("red", "green"))
+legend("topleft", c("Homem", "Mulher"), fill = c("red", "green"))
+
+
+
+Spct <- round(G1_sexo_aluno_12/sum(G1_sexo_aluno_12)*100)
+nome <- c("Homem", "Mulher")
+nome <- paste(nome,Spct)
+nome <- paste(nome, "%", sep = "")
+
+pie(G1_sexo_aluno_12, labels = nome, col = rainbow(length(nome)), main = "Distribuição de homens e Mulheres no grupo 1 - 2012")
+
+
+
+###### G1 RACA ###################################
+
+
+G1_cor_raca_2012 <- table(G1_HM_2012$CO_COR_RACA_ALUNO)
+
+prop.table(G1_cor_raca_2012)
+
+#       0           1           2           3           4           5           6 
+#  0.270736632 0.196042347 0.025706071 0.111361847 0.005939852 0.001507010 0.388706241  
+
+# 1. Branca
+# 2. Preta
+# 3. Parda
+# 4. Amarela
+# 5. Indígena
+# 6. Não dispõe da informação
+# 0. Não declarado
+
+# Moda
+names(G1_cor_raca_2012)[which.max(G1_cor_raca_2012)]
+# 6
+
+cores <- c(1:7)  
+barplot(G1_cor_raca_2012, main ="Distribuição de raca grupo 1 - 2012", col = cores )
+legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
+
+g1R2012 <- round(G1_cor_raca_2012/sum(G1_cor_raca_2012)*100)
+nomeCR2012 <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
+nomeCR2012 <- paste(nomeCR2012,g1R2012)
+nomeCR2012 <- paste(nomeCR2012, "%", sep = "")
+
+pie(G1_cor_raca_2012, labels = nomeCR2012, main = "porcentagem do Raca grupo 1- 2012",col = rainbow(length(nomeCR2012)))
+
+
+# BRANCOS E NEGROS 
+
+G1_PRETA_BRANCA_2012 <- G1_HM_2012 %>%  filter(CO_COR_RACA_ALUNO == 2 & CO_COR_RACA_ALUNO == 1)
+
+G1_PB_HM_2012 <- table(G1_HM_2012$CO_COR_RACA_ALUNO == 2 | G1_HM_2012$CO_COR_RACA_ALUNO == 1 )
+
+
+barplot(G1_PB_HM_2012, main ="Distribuição de BRANCO e NEGROS grupo 1 - 2012", col = c("red", "black") )
+legend("top", c("Branca","Preta" ), fill = c("red", "black"))
+
+RACAptc <- round(G1_PB_HM_2012 /sum(G1_PB_HM_2012 )*100)
+Rnome <- c("Branco", "Negro")
+Rnome <- paste(Rnome,RACAptc)
+Rnome <- paste(Rnome, "%", sep = "")
+
+pie(G1_PB_HM_2012, labels = Rnome, main = "porcentagem do Raca grupo 1- 2012",col = rainbow(length(Rnome)))
+
+
+
+
+
+
+
+library(ggplot2)  
+
+nrow(G1_HM_2012)
+
+valor <- c(1:771063)
+
+valor <- as.data.frame(valor)
+
+G1_2012 <- bind_cols(valor,G1_HM_2012)
+
+
+ggplot(G1_2012, aes(fill=DS_SEXO_ALUNO, y=log(valor), x=DS_COR_RACA_ALUNO)) + 
+  geom_bar(position="dodge", stat="identity")
+
+
+ggplot(G1_2012, aes(x=IN_SEXO_ALUNO, y= valor, fill=IN_SEXO_ALUNO)) +
+  geom_col(position="dodge") +
+  labs(x="", y="Quantidade", fill="RACA")
+
+
+boxplot(valor ~ CO_COR_RACA_ALUNO, data = G1_2012, main = "Boxplot dos pesos dos atletas",
+        xlab = "Esportes", ylab = "Peso", las = 2, col = "gray85", cex.axis = 0.8)
+
+# BRANCOS E NEGROS MULHERES
+
+
+G1_raca_M_2012 <- G1_HM_2012 %>% filter(IN_SEXO_ALUNO == 1)
+
+G1_BN_M_2012 <- G1_raca_M_2012 %>% filter(CO_COR_RACA_ALUNO == 1 | CO_COR_RACA_ALUNO == 2)
+
+
+# BRANCOS E NEGROS HOMENS
+
+
+
+
+
+G2_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G2_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G3_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G3_2012.csv',  sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G4_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G4_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G5_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G5_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G6_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G6_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G7_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G7_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G8_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G8_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+
+
 G3_HM_RACA_2012 <-select()
 G4_HM_RACA_2012 <-select()
 G5_HM_RACA_2012 <-select()
