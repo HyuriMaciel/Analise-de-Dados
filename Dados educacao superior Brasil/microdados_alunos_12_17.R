@@ -4,7 +4,6 @@ setwd("/home/hyuri/Área de Trabalho/Anna")
 save.image(file="Alunos_last.RData")
 #system.time
 
-
 library(sqldf)
 library(datasets)
 library(dplyr)
@@ -18,14 +17,6 @@ dados_alunos_2012 <- read.csv.sql(file="/home/hyuri/Área de Trabalho/Anna/micro
                                   sql = "select  CO_CURSO,NO_CURSO, CO_COR_RACA_ALUNO, DS_COR_RACA_ALUNO, IN_SEXO_ALUNO, DS_SEXO_ALUNO,
                                   from file",
                                   header = TRUE, sep ="|")
-
-
-#2016
-#dados_alunos_2016 <- read.csv.sql(file="/home/hyuri/Dropbox/Anna/microdados_censo_superior_2016/DADOS/DM_ALUNO.CSV",
-#                                  sql = "select  CO_CURSO,NO_CURSO, CO_COR_RACA_ALUNO, DS_COR_RACA_ALUNO, IN_SEXO_ALUNO, DS_SEXO_ALUNO
-#                                  from file",
-#                                 header = TRUE, sep ="|")
-
 
 #2017
 dados_alunos_2017 <- read.csv.sql(file="/home/hyuri/Área de Trabalho/Anna/microdados_educacao_superior_2017/Microdados_Educacao_Superior_2017/DADOS/DM_ALUNO.CSV",
@@ -42,7 +33,6 @@ CO_CURSO <- cod_curso$CO_CURSO
 
 NO_CURSO <- cod_curso$NO_CURSO
 
-#NO_CURSO <- iconv(NO_CURSO, "ASCII","latin1", "")
 iconv(NO_CURSO, "latin1", "ASCII//TRANSLIT")
 
 NO_CURSO <- iconv(NO_CURSO, "latin1", "ASCII//TRANSLIT")
@@ -51,13 +41,9 @@ NO_CURSO <- as.data.frame(NO_CURSO)
 
 CO_CURSO <- as.data.frame(CO_CURSO)
 
-
-
 COD_CURSOS_2017<-bind_cols(CO_CURSO,NO_CURSO)
 
 dados_2017<-left_join(COD_CURSOS_2017, dados_alunos_2017)
-
-
 
 NO_CURSO_2012 <- dados_alunos_2012$NO_CURSO
 
@@ -70,16 +56,11 @@ NO_CURSO_2012 <- as.data.frame(NO_CURSO_2012)
 
 dados_2012<-bind_cols(NO_CURSO_2012,dados_alunos_2012)
 
-
 NOME_CURSO <- cod_curso$NO_CURSO
 
 nome <- iconv(NOME_CURSO, "latin1", "ASCII//TRANSLIT")
 
 nome <- as.data.frame(nome)
-
-#write.table(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.txt", sep = ";")
-
-#write.csv(nome, "/home/hyuri/Dropbox/Anna/nomeCursos.csv")
 
 summary(dados_2012)
 #NO_CURSO_2012        CO_CURSO         NO_CURSO         CO_GRAU_ACADEMICO CO_COR_RACA_ALUNO DS_COR_RACA_ALUNO  IN_SEXO_ALUNO    DS_SEXO_ALUNO     
@@ -111,13 +92,7 @@ summary(dados_2017)
 
 str(dados_2017$NO_CURSO)
 
-
-#salva o novo data frame
-#write.csv(dados_alunos_2012, "alunos_2012.csv", row.names = FALSE)
-
-#write.csv(dados_alunos_2017, "alunos_2017.csv", row.names = FALSE)
-
-########### ANALISE 2012
+######################################## ANALISE 2012 #######################################################################
 
 ## SEXO
 
@@ -132,7 +107,6 @@ sum(dados_alunos_2012$IN_SEXO_ALUNO == "0")
 # Sexo 
 # 0. Masculino
 # 1. Feminino
-
 
 prop.table(sexo_aluno_DS)
 #   Feminino   Masculino 
@@ -150,7 +124,6 @@ quantile(sexo_aluno, na.rm = TRUE)
 barplot(sexo_aluno, main = "Distribuição de homens e Mulheres no Ensino Superiro - 2012", col = c("red", "green"))
 legend("topleft", c("Homem", "Mulher"), fill = c("red", "green"))
 
-
 pie(sexo_aluno_DS, labels = sexo_aluno_DS, main = "Distribuição Homens e Mulheres -2012")
 
 pct <- round(sexo_aluno/sum(sexo_aluno)*100)
@@ -166,7 +139,7 @@ legend("topright", c("Homem","Mulher"), cex = 0.8,
        fill = rainbow(length(x)))
 
 
-# COR-RAÇA - 2012
+############################### RAÇA - 2012 ################################################################
 
 cor_raca <- table(dados_alunos_2012$CO_COR_RACA_ALUNO)
 
@@ -183,7 +156,6 @@ prop.table(cor_raca)
 # 6. Não dispõe da informação
 # 0. Não declarado
 
-
 cores <- c(1:7)  
 barplot(cor_raca, main ="Distribuição de cor-raca - 2012", col = cores )
 legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
@@ -195,41 +167,9 @@ nomeCR2012 <- paste(nomeCR2012, "%", sep = "")
 
 pie(cor_raca, labels = nomeCR2012, main = "porcentagem do cor-raca Mulhres- 2012",col = rainbow(length(nomeCR2012)))
 
-
-# grau
-
-grau_academico <- table(dados_alunos_2012$CO_GRAU_ACADEMICO)  
-
-prop.table(grau_academico)
-#     0           1           2           3 
-# 0.006769444 0.653984958 0.192417466 0.146828132
-
-# 1. Bacharelado
-# 2. Licenciatura
-# 3. Tecnológico
-# 0. Não aplicável 
-
-coresG <-(1:4)
-barplot(grau_academico, main ="Distribuição do Grau academico - 2012", col = cores )
-legend("topleft", c("Não aplicavel","Bacharelado","Licenciatura","Tecnológico" ), fill = cores)
-
-pie(grau_academico, labels = grau_academico, main = "Distribuição Grau Academico -2012")
-
-pctG <- round(grau_academico/sum(grau_academico)*100)
-nomeG <- c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológico")
-nomeG <- paste(nomeG,pctG)
-nomeG <- paste(nomeG, "%", sep = "")
-
-pie(grau_academico, labels = nomeG, main = "porcentagem do Grau Academico - 2012",col = rainbow(length(nomeG)))
-legend("topright",  c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológico"), cex = 0.8,
-       fill = rainbow(length(x)))
-
-########## MULHRES 2012
+################################################## MULHRES 2012 #######################################################################
 
 alunos_mulheres <- subset(dados_alunos_2012, dados_alunos_2012$IN_SEXO_ALUNO == "1")
-
-
-# COR-RAÇA MULHER - 2012
 
 cor_raca_Mulher <- table(alunos_mulheres$CO_COR_RACA_ALUNO)
 
@@ -290,9 +230,7 @@ legend("topright",  c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológic
        fill = rainbow(length(x)))
 
 
-# ######   Homens 2012
-
-
+#################################################  Homens 2012 ###########################################################################
 
 alunos_homens <- subset(dados_alunos_2012, dados_alunos_2012$IN_SEXO_ALUNO == "0")
 
@@ -357,10 +295,7 @@ nomeGH <- paste(nomeGH, "%", sep = "")
 pie(grau_academico_homens, labels = nomeGH, main = "porcentagem Grau Academico Homens 2012",col = rainbow(length(nomeGH)))
 
 
-
 ####################### DADOS 2017 ################################################
-
-#  CO_CURSO, TP_COR_RACA, TP_SEXO, TP_GRAU_ACADEMICO
 
 ## SEXO
 
@@ -462,12 +397,12 @@ nomeG2017 <- paste(nomeG2017, "%", sep = "")
 pie(grau_academico_2017, labels = nomeG2017, main = "porcentagem Grau Academico 2017",col = rainbow(length(nomeG2017)))
 
 
-########## MULHRES 2017
+############################################### MULHRES 2017
 
 alunos_mulheres_2017 <- subset(dados_alunos_2017, dados_alunos_2017$TP_SEXO== "1")
 
 
-# COR-RAÇA MULHER - 2017
+##################################### COR-RAÇA MULHER - 2017
 
 cor_raca_Mulher_2017 <- table(alunos_mulheres_2017$TP_COR_RACA)
 
@@ -523,11 +458,11 @@ nomeGM2017 <- paste(nomeGM2017, "%", sep = "")
 
 pie(grau_academico_Mulheres_2017, labels = nomeGM2017, main = "porcentagem do Grau Academico Mulhres- 2017",col = rainbow(length(nomeGM2017)))
 
-# Homens 2017
+########################################################## Homens 2017
 
 alunos_homens_2017 <- subset(dados_alunos_2017, dados_alunos_2017$TP_SEXO == "2")
 
-# COR-RAÇA Homens - 2012
+####################################################### COR-RAÇA Homens - 2012
 
 cor_raca_homens_2017 <- table(alunos_homens_2017$TP_COR_RACA)
 
@@ -588,20 +523,23 @@ nomeGH2017 <- paste(nomeGH2017, "%", sep = "")
 pie(grau_academico_homens_2017, labels = nomeGH2017, main = "porcentagem do Grau Academico  Homens 2017",col = rainbow(length(nomeGH2017)))
 
 
-
-
-
-##### GRUPOS   #####
-
-dados_RACA_HM_2012 <- dados_2012 %>% select(NO_CURSO_2012, CO_CURSO, CO_COR_RACA_ALUNO, IN_SEXO_ALUNO)
-
+############################################# GRUPOS 2012  ##############################################################
+library(ggplot2)
 library(readr)
 library(DAAG)
 
 G1_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G1_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G2_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G2_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G3_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G3_2012.csv',  sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G4_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G4_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G5_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G5_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G6_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G6_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G7_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G7_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+G8_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G8_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
+
 
 str(G1_HM_2012)
-G1_HM_2012 <- as.data.frame(G1_HM_2012)
+#G1_HM_2012 <- as.data.frame(G1_HM_2012)
 summary(G1_HM_2012)
 
 #NO_CURSO_2012         CO_CURSO         NO_CURSO         CO_COR_RACA_ALUNO DS_COR_RACA_ALUNO  IN_SEXO_ALUNO    DS_SEXO_ALUNO     
@@ -612,7 +550,7 @@ summary(G1_HM_2012)
 #3rd Qu.: 102280                      3rd Qu.:6.000                        3rd Qu.:1.0000                     
 #Max.   :5001097                      Max.   :6.000                        Max.   :1.0000
 
-######## G1 SEXO ######################################################
+############################################# SEXP 2012 ##############################################################
 
 G1_sexo_aluno_12<- table(G1_HM_2012$IN_SEXO_ALUNO)
 
@@ -638,21 +576,33 @@ quantile(G1_sexo_aluno_12, na.rm = TRUE)
 #   0%      25%      50%      75%     100% 
 #  62015.0 223773.2 385531.5 547289.8 709048.0 
 
-barplot(G1_sexo_aluno_12, border = F ,main = "Distribuição de homens e Mulheres no grupo 1 - 2012", ylab = , col = c("red", "green"))
-legend("topleft", c("Homem", "Mulher"), fill = c("red", "green"))
+contagemG1 <- table(G1_HM_2012$IN_SEXO_ALUNO)
 
+nomesG1 <- levels(G1_HM_2012$IN_SEXO_ALUNO)
 
+porcentG1 <- round(prop.table(contagemG1)*100,2)
 
-Spct <- round(G1_sexo_aluno_12/sum(G1_sexo_aluno_12)*100)
-nome <- c("Homem", "Mulher")
-nome <- paste(nome,Spct)
-nome <- paste(nome, "%", sep = "")
+rotuloG1 <- paste(nomesG1," (",porcentG1,"%",")",sep="")
 
-pie(G1_sexo_aluno_12, labels = nome, col = rainbow(length(nome)), main = "Distribuição de homens e Mulheres no grupo 1 - 2012")
+dados <- data.frame(round(prop.table(contagemG1)*100,2))
 
+dados <- within(dados, {
+  Var1 <- factor(Var1, labels=c('Homem','Mulher'))
+})
 
+attach(dados)
+dados <- dados[order(Freq),] 
+detach(dados)
 
-###### G1 RACA ###################################
+# Fora das Barras
+ggplot(data=dados, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill= c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Genero") +
+  theme_minimal()
+
+####################################### 2012 RACA ###########################################################
 
 
 G1_cor_raca_2012 <- table(G1_HM_2012$CO_COR_RACA_ALUNO)
@@ -674,103 +624,99 @@ prop.table(G1_cor_raca_2012)
 names(G1_cor_raca_2012)[which.max(G1_cor_raca_2012)]
 # 6
 
-cores <- c(1:7)  
-barplot(G1_cor_raca_2012, main ="Distribuição de raca grupo 1 - 2012", col = cores )
-legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
+contagemRG1 <- table(G1_HM_2012$CO_COR_RACA_ALUNO)
 
-g1R2012 <- round(G1_cor_raca_2012/sum(G1_cor_raca_2012)*100)
-nomeCR2012 <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
-nomeCR2012 <- paste(nomeCR2012,g1R2012)
-nomeCR2012 <- paste(nomeCR2012, "%", sep = "")
+nomesRG1 <- levels(G1_HM_2012$CO_COR_RACA_ALUNO)
 
-pie(G1_cor_raca_2012, labels = nomeCR2012, main = "porcentagem do Raca grupo 1- 2012",col = rainbow(length(nomeCR2012)))
+porcentRG1 <- round(prop.table(contagemRG1)*100,7)
 
+rotuloRG1 <- paste(nomesRG1," (",porcentRG1,"%",")",sep="")
 
-# BRANCOS E NEGROS 
+cores <- c(1:7) 
 
-G1_PRETA_BRANCA_2012 <- G1_HM_2012 %>%  filter(CO_COR_RACA_ALUNO == 2 & CO_COR_RACA_ALUNO == 1)
+dadosR <- data.frame(round(prop.table(contagemRG1)*100,2))
 
-G1_PB_HM_2012 <- table(G1_HM_2012$CO_COR_RACA_ALUNO == 2 | G1_HM_2012$CO_COR_RACA_ALUNO == 1 )
+dadosR <- within(dadosR, {
+  Var1 <- factor(Var1, labels=c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação"))
+})
 
+attach(dadosR)
+dadosR <- dadosR[order(Freq),] 
+detach(dadosR)
 
-barplot(G1_PB_HM_2012, main ="Distribuição de BRANCO e NEGROS grupo 1 - 2012", col = c("red", "black") )
-legend("top", c("Branca","Preta" ), fill = c("red", "black"))
+# Fora das Barras
+ggplot(data=dadosR, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill= cores)+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
-RACAptc <- round(G1_PB_HM_2012 /sum(G1_PB_HM_2012 )*100)
-Rnome <- c("Branco", "Negro")
-Rnome <- paste(Rnome,RACAptc)
-Rnome <- paste(Rnome, "%", sep = "")
+################################ MULHERES E HOMENS NEGROS  2012 ##############################################
 
-pie(G1_PB_HM_2012, labels = Rnome, main = "porcentagem do Raca grupo 1- 2012",col = rainbow(length(Rnome)))
+library(dplyr)
 
+G1_NEGRO_2012 <- G1_HM_2012 %>%  filter(CO_COR_RACA_ALUNO == 2 )
 
+sum(G1_NEGRO_2012$IN_SEXO_ALUNO == "1")
+#[1] 17472
+sum(G1_NEGRO_2012$IN_SEXO_ALUNO == "0")
+#[1] 2349
 
+# Sexo 
+# 0. Masculino
+# 1. Feminino
 
+contagemPG1 <- table(G1_PRETA_2012$IN_SEXO_ALUNO)
 
+nomesPG1 <- levels(G1_PRETA_2012$IN_SEXO_ALUNO)
 
+porcentPG1 <- round(prop.table(contagemPG1)*100,2)
 
-library(ggplot2)  
+rotuloPG1 <- paste(nomesPG1," (",porcentPG1,"%",")",sep="")
 
-nrow(G1_HM_2012)
+dadosP <- data.frame(round(prop.table(contagemPG1)*100,2))
 
-valor <- c(1:771063)
+dadosP <- within(dadosP, {ei
+  Var1 <- factor(Var1, labels=c('Homem','Mulher'))
+})
 
-valor <- as.data.frame(valor)
+attach(dadosP)
+dadosP <- dadosP[order(Freq),] 
+detach(dadosP)
 
-G1_2012 <- bind_cols(valor,G1_HM_2012)
-
-
-ggplot(G1_2012, aes(fill=DS_SEXO_ALUNO, y=log(valor), x=DS_COR_RACA_ALUNO)) + 
-  geom_bar(position="dodge", stat="identity")
-
-
-ggplot(G1_2012, aes(x=IN_SEXO_ALUNO, y= valor, fill=IN_SEXO_ALUNO)) +
-  geom_col(position="dodge") +
-  labs(x="", y="Quantidade", fill="RACA")
-
-
-boxplot(valor ~ CO_COR_RACA_ALUNO, data = G1_2012, main = "Boxplot dos pesos dos atletas",
-        xlab = "Esportes", ylab = "Peso", las = 2, col = "gray85", cex.axis = 0.8)
-
-# BRANCOS E NEGROS MULHERES
-
-
-G1_raca_M_2012 <- G1_HM_2012 %>% filter(IN_SEXO_ALUNO == 1)
-
-G1_BN_M_2012 <- G1_raca_M_2012 %>% filter(CO_COR_RACA_ALUNO == 1 | CO_COR_RACA_ALUNO == 2)
-
-
-# BRANCOS E NEGROS HOMENS
-
-
-
+# Fora das Barras
+ggplot(data=dadosP, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
 
-G2_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G2_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G3_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G3_2012.csv',  sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G4_HM_2012 <- read.csv('/home/hyuri/Área de Trabalho/Anna/G4_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G5_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G5_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G6_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G6_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G7_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G7_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
-G8_HM_2012<- read.csv('/home/hyuri/Área de Trabalho/Anna/G8_2012.csv', sep = "," ,header=TRUE, stringsAsFactors=FALSE)
 
 
-G3_HM_RACA_2012 <-select()
-G4_HM_RACA_2012 <-select()
-G5_HM_RACA_2012 <-select()
-G6_HM_RACA_2012 <-select()
-G7_HM_RACA_2012 <-select()
-G8_HM_RACA_2012 <-select()
 
 
-G1_HM_RACA_2017 <-select()
-G2_HM_RACA_2017 <-select()
-G3_HM_RACA_2017 <-select()
-G4_HM_RACA_2017 <-select()
-G5_HM_RACA_2017 <-select()
-G6_HM_RACA_2017 <-select()
-G7_HM_RACA_2017 <-select()
-G8_HM_RACA_2017 <-select()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
