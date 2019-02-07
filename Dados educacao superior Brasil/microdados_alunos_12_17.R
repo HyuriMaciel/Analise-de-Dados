@@ -10,7 +10,8 @@ library(dplyr)
 library(lubridate)
 library(ggplot2)
 
-#carrega os dados do csv selecionado apenas as variáveis que seram usadas, com isso reduz o tamanho do data frame a ser carregado
+#carrega os dados do csv selecionado apenas as variáveis que seram usadas, 
+# com isso reduz o tamanho do data frame a ser carregado
 
 #2012
 dados_alunos_2012 <- read.csv.sql(file="/home/hyuri/Área de Trabalho/Anna/microdados_censo_superior_2012/2012/DADOS/DM_ALUNO.CSV",
@@ -94,8 +95,6 @@ str(dados_2017$NO_CURSO)
 
 ######################################## ANALISE 2012 #######################################################################
 
-## SEXO
-
 sexo_aluno<- table(dados_alunos_2012$IN_SEXO_ALUNO)
 sexo_aluno_DS<-table(dados_alunos_2012$DS_SEXO_ALUNO)
 
@@ -121,29 +120,59 @@ quantile(sexo_aluno, na.rm = TRUE)
 #   0%     25%     50%     75%    100% 
 # 4223140 4502941 4782742 5062542 5342343
 
-barplot(sexo_aluno, main = "Distribuição de homens e Mulheres no Ensino Superiro - 2012", col = c("red", "green"))
-legend("topleft", c("Homem", "Mulher"), fill = c("red", "green"))
 
-pie(sexo_aluno_DS, labels = sexo_aluno_DS, main = "Distribuição Homens e Mulheres -2012")
+cores <- c(1:7) 
 
-pct <- round(sexo_aluno/sum(sexo_aluno)*100)
-nome <- c("Homem", "Mulher")
-nome <- paste(nome,pct)
-nome <- paste(nome, "%", sep = "")
+#barplot(sexo_aluno, main = "Distribuição de homens e Mulheres no Ensino Superiro - 2012", col = c("red", "green"))
+#legend("topleft", c("Homem", "Mulher"), fill = c("red", "green"))
 
-pie(sexo_aluno, labels = nome, col = rainbow(length(nome)), main = "Porcentagem da Distribuição de Homens e Mulheres 2012")
+#pie(sexo_aluno_DS, labels = sexo_aluno_DS, main = "Distribuição Homens e Mulheres -2012")
 
+#pct <- round(sexo_aluno/sum(sexo_aluno)*100)
+#nome <- c("Homem", "Mulher")
+#nome <- paste(nome,pct)
+#nome <- paste(nome, "%", sep = "")
 
-pie(sexo_aluno, labels = nome, main = "porcentagem de homens e mulheres no ensino superior",col = rainbow(length(nome)))
-legend("topright", c("Homem","Mulher"), cex = 0.8,
-       fill = rainbow(length(x)))
+#pie(sexo_aluno, labels = nome, col = rainbow(length(nome)), main = "Porcentagem da Distribuição de Homens e Mulheres 2012")
 
 
-############################### RAÇA - 2012 ################################################################
+#pie(sexo_aluno, labels = nome, main = "porcentagem de homens e mulheres no ensino superior",col = rainbow(length(nome)))
+#legend("topright", c("Homem","Mulher"), cex = 0.8,
+#       fill = rainbow(length(x)))
 
-cor_raca <- table(dados_alunos_2012$CO_COR_RACA_ALUNO)
 
-prop.table(cor_raca)
+contagem2012 <- table(dados_2012$IN_SEXO_ALUNO)
+
+nomes2012 <- levels(dados_2012$IN_SEXO_ALUNO)
+
+porcent2012 <- round(prop.table(contagem2012)*100,2)
+
+rotulo2012 <- paste(nomes2012," (",porcent2012,"%",")",sep="")
+
+dados2012 <- data.frame(round(prop.table(contagem2012)*100,2))
+
+dados2012 <- within(dados2012, {
+  Var1 <- factor(Var1, labels=c('Homem','Mulher'))
+})
+
+attach(dados2012)
+dados2012 <- dados2012[order(Freq),] 
+detach(dados2012)
+
+# Fora das Barras
+ggplot(data=dados2012, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
+
+###############################    RAÇA - 2012 ################################################################
+
+RACA_2012 <- table(dados_alunos_2012$CO_COR_RACA_ALUNO)
+
+prop.table(RACA_2012)
 
 #     0           1           2           3           4           5           6 
 # 0.287494317 0.219814514 0.025325015 0.100395662 0.008364031 0.001417597 0.357188863 
@@ -155,145 +184,84 @@ prop.table(cor_raca)
 # 5. Indígena
 # 6. Não dispõe da informação
 # 0. Não declarado
+ 
+#barplot(RACA_2012, main ="Distribuição de cor-raca - 2012", col = cores )
+#legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
 
-cores <- c(1:7)  
-barplot(cor_raca, main ="Distribuição de cor-raca - 2012", col = cores )
-legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
+#pct2012 <- round(cor_raca_Mulher/sum(RACA_2012)*100)
+#nomeCR2012 <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
+#nomeCR2012 <- paste(nomeCR2012,pct2012)
+#nomeCR2012 <- paste(nomeCR2012, "%", sep = "")
 
-pct2012 <- round(cor_raca_Mulher/sum(cor_raca)*100)
-nomeCR2012 <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
-nomeCR2012 <- paste(nomeCR2012,pct2012)
-nomeCR2012 <- paste(nomeCR2012, "%", sep = "")
+#pie(RACA_2012, labels = nomeCR2012, main = "porcentagem do cor-raca Mulhres- 2012",col = rainbow(length(nomeCR2012)))
 
-pie(cor_raca, labels = nomeCR2012, main = "porcentagem do cor-raca Mulhres- 2012",col = rainbow(length(nomeCR2012)))
+contagemR_2012 <- table(dados_2012$CO_COR_RACA_ALUNO)
 
-################################################## MULHRES 2012 #######################################################################
+nomesR_2012 <- levels(dados_2012$CO_COR_RACA_ALUNO)
 
-alunos_mulheres <- subset(dados_alunos_2012, dados_alunos_2012$IN_SEXO_ALUNO == "1")
+porcentR_2012 <- round(prop.table(contagemR_2012)*100,7)
 
-cor_raca_Mulher <- table(alunos_mulheres$CO_COR_RACA_ALUNO)
-
-prop.table(cor_raca_Mulher)
-
-#       0           1           2           3           4           5           6 
-#  0.284007597 0.219609074 0.023595078 0.102365760 0.008616444 0.001299991 0.360506055 
-
-# 1. Branca
-# 2. Preta
-# 3. Parda
-# 4. Amarela
-# 5. Indígena
-# 6. Não dispõe da informação
-# 0. Não declarado
-
-# Moda
-names(cor_raca_Mulher)[which.max(cor_raca_Mulher)]
-# 6
+rotuloR_2012 <- paste(nomesR_2012," (",porcentR_2012,"%",")",sep="")
 
 cores <- c(1:7) 
-barplot(cor_raca_Mulher, main ="Distribuição de cor-raca Mulheres - 2012", col = cores )
-legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
 
-pctRM <- round(cor_raca_Mulher/sum(cor_raca_Mulher)*100)
-nomeRM <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
-nomeRM <- paste(nomeRM,pctRM)
-nomeRM <- paste(nomeRM, "%", sep = "")
+dadosR_2012 <- data.frame(round(prop.table(contagemR_2012)*100,2))
 
-pie(cor_raca_Mulher, labels = nomeRM, main = "porcentagem do cor-raca Mulhres- 2012",col = rainbow(length(nomeRM)))
+dadosR_2012 <- within(dadosR_2012, {
+  Var1 <- factor(Var1, labels=c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação"))
+})
 
-# grau academico
+attach(dadosR_2012)
+dadosR_2012 <- dadosR_2012[order(Freq),] 
+detach(dadosR_2012)
 
-grau_academico_Mulheres <- table(alunos_mulheres$CO_GRAU_ACADEMICO)  
+# Fora das Barras
+ggplot(data=dadosR_2012, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill= cores)+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
-prop.table(grau_academico_Mulheres)
-#      0           1           2           3 
-# 0.006747414 0.625883812 0.244163843 0.123204931 
-
-# 1. Bacharelado
-# 2. Licenciatura
-# 3. Tecnológico
-# 0. Não aplicável 
-
-coresGM <-(1:4)
-barplot(grau_academico_Mulheres, main ="Distribuição Grau academico-Mulhres- 2012", col = cores )
-legend("topleft", c("Não aplicavel","Bacharelado","Licenciatura","Tecnológico" ), fill = coresGM)
-
-pie(grau_academico_Mulheres, labels = grau_academico_Mulheres, main = "Distribuição Grau Academico -  Mulhres -2012")
-
-pctGM <- round(grau_academico_Mulheres/sum(grau_academico_Mulheres)*100)
-nomeGM <- c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológico")
-nomeGM <- paste(nomeGM,pctGM)
-nomeGM <- paste(nomeGM, "%", sep = "")
-
-pie(grau_academico_Mulheres, labels = nomeGM, main = "porcentagem do Grau Academico - Mulhres- 2012",col = rainbow(length(nomeGM)))
-legend("topright",  c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológico"), cex = 0.8,
-       fill = rainbow(length(x)))
+################################################# NEGROS 2012 ################################################
 
 
-#################################################  Homens 2012 ###########################################################################
+NEGRO_2012 <- dados_2012 %>%  filter(CO_COR_RACA_ALUNO == 2 )
 
-alunos_homens <- subset(dados_alunos_2012, dados_alunos_2012$IN_SEXO_ALUNO == "0")
+sum(NEGRO_2012$IN_SEXO_ALUNO == "1")
+#[1] 17472
+sum(NEGRO_2012$IN_SEXO_ALUNO == "0")
+#[1] 2349
 
-# COR-RAÇA Homens - 2012
+# Sexo 
+# 0. Masculino
+# 1. Feminino
 
-cor_raca_homens <- table(alunos_homens$CO_COR_RACA_ALUNO)
+contagemNEGRO_2012 <- table(NEGRO_2012$IN_SEXO_ALUNO)
 
-prop.table(cor_raca_homens)
+nomesNEGRO_2012 <- levels(NEGRO_2012$IN_SEXO_ALUNO)
 
-#       0           1           2           3           4           5           6 
-#  0.291905075 0.220074400 0.027513414 0.097903456 0.008044725 0.001566370 0.352992560 
+porcentNEGRO_2012 <- round(prop.table(contagemNEGRO_2012)*100,2)
 
-# 1. Branca
-# 2. Preta
-# 3. Parda
-# 4. Amarela
-# 5. Indígena
-# 6. Não dispõe da informação
-# 0. Não declarado
+rotuloNEGRO_2012 <- paste(nomesNEGRO_2012," (",porcentNEGRO_2012,"%",")",sep="")
 
-# Moda
-names(cor_raca_homens)[which.max(cor_raca_homens)]
-# 6
+dadosNEGRO_2012 <- data.frame(round(prop.table(contagemNEGRO_2012)*100,2))
 
+dadosNEGRO_2012 <- within(dadosNEGRO_2012, {
+  Var1 <- factor(Var1, labels=c('Homem','Mulher'))
+})
 
-barplot(cor_raca_homens, main ="Distribuição de cor-raca-Homens - 2012", col = cores )
-legend("top", c("Não declarado","Branca","Preta","Parda","Amarela","Indígena","Não dispõe da informação" ), fill = cores)
+attach(dadosNEGRO_2012)
+dadosP <- dadosNEGRO_2012[order(Freq),] 
+detach(dadosP)
 
-pie(cor_raca_homens, labels = cor_raca_homens, main = "Distribuição Cor-Raça Mulheres -2012")
-
-pctRH <- round(cor_raca_homens/sum(cor_raca_homens)*100)
-nomeRH <- c("Nao Declarado", "Branco","Preto", "Pardo","Amarela", "Indígina", "Não dispõe da informação", "Não declarado")
-nomeRH <- paste(nomeRH,pctRH)
-nomeRH <- paste(nomeRH, "%", sep = "")
-
-pie(cor_raca_homens, labels = nomeRH, main = "porcentagem do cor-raca homens- 2012",col = rainbow(length(nomeRH)))
-
-
-# grau academico
-
-grau_academico_homens <- table(alunos_homens$CO_GRAU_ACADEMICO)  
-
-prop.table(grau_academico_homens)
-#       0           1           2           3 
-#  0.006797312 0.689533380 0.126957430 0.176711878 
-
-# 1. Bacharelado
-# 2. Licenciatura
-# 3. Tecnológico
-# 0. Não aplicável 
-
-barplot(grau_academico_homens, main ="Distribuição Grau academico-Homens- 2012", col = cores )
-legend("topleft", c("Não aplicavel","Bacharelado","Licenciatura","Tecnológico" ), fill = coresGM)
-
-pie(grau_academico_homens, labels = grau_academico_homens, main = "Distribuição Grau Academico -  homens -2012")
-
-pctGH <- round(grau_academico_homens/sum(grau_academico_homens)*100)
-nomeGH <- c("Nao Aplicado", "Bacharelado","Licenciatura", "Tecnológico")
-nomeGH <- paste(nomeGH,pctGH)
-nomeGH <- paste(nomeGH, "%", sep = "")
-
-pie(grau_academico_homens, labels = nomeGH, main = "porcentagem Grau Academico Homens 2012",col = rainbow(length(nomeGH)))
-
+# Fora das Barras
+ggplot(data=dadosNEGRO_2012, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
 ####################### DADOS 2017 ################################################
 
@@ -677,7 +645,7 @@ rotuloPG1 <- paste(nomesPG1," (",porcentPG1,"%",")",sep="")
 
 dadosP <- data.frame(round(prop.table(contagemPG1)*100,2))
 
-dadosP <- within(dadosP, {ei
+dadosP <- within(dadosP, {
   Var1 <- factor(Var1, labels=c('Homem','Mulher'))
 })
 
