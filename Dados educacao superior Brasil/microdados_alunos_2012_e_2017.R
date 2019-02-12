@@ -194,7 +194,73 @@ ggplot(data=dadosR_2012, aes(x=Var1, y=Freq)) +
   ylab("Frequência") +
   xlab("Tipo") +
   theme_minimal()
+################################################# NEGROS e Pardas  ################################################
 
+
+NEGRO_e_Pardos_2012 <- dados_2017 %>%  filter((TP_COR_RACA == 2 | TP_COR_RACA == 3) & TP_SEXO == 1 )
+
+Brancas <- dados_2017 %>%  filter((TP_COR_RACA == 2 | TP_COR_RACA  == 3 | TP_COR_RACA  == 1 ) & TP_SEXO == 1 )
+
+sum(NEGRO_e_Pardos_2012$TP_COR_RACA == "2")
+
+sum(NEGRO_e_Pardos_2012$TP_COR_RACA == "3")
+
+
+sum(Brancas$TP_COR_RACA == 1)
+
+contagemNEGRO_2012 <- table(NEGRO_e_Pardos_2012$TP_COR_RACA)
+
+nomesNEGRO_2012 <- levels(NEGRO_e_Pardos_2012$TP_COR_RACA)
+
+porcentNEGRO_2012 <- round(prop.table(contagemNEGRO_2012)*100,2)
+
+rotuloNEGRO_2012 <- paste(nomesNEGRO_2012," (",porcentNEGRO_2012,"%",")",sep="")
+
+dadosNEGRO_2012 <- data.frame(round(prop.table(contagemNEGRO_2012)*100,2))
+
+dadosNEGRO_2012 <- within(dadosNEGRO_2012, {
+  Var1 <- factor(Var1, labels=c('Negras','Pardas'))
+})
+
+attach(dadosNEGRO_2012)
+dadosNEGRO_2012 <- dadosNEGRO_2012[order(Freq),] 
+detach(dadosNEGRO_2012)
+
+# Fora das Barras
+ggplot(data=dadosNEGRO_2012, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
+
+##############   BRANCAS
+contagembranca<- table(Brancas$TP_COR_RACA)
+
+nomesbranca <- levels(Brancas$TP_COR_RACA)
+
+porcentbranca <- round(prop.table(contagembranca)*100,3)
+
+rotulobranca<- paste(nomesbranca," (",porcentbranca,"%",")",sep="")
+
+dadosbranca <- data.frame(round(prop.table(contagembranca)*100,2))
+
+dadosbranca<- within(dadosbranca, {
+  Var1 <- factor(Var1, labels=c('Branca', 'Negras','Pardas'))
+})
+
+attach(dadosbranca)
+dadosbranca <- dadosbranca[order(Freq),] 
+detach(dadosbranca)
+
+# Fora das Barras
+ggplot(data=dadosbranca, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(2,1,3))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
 ################################################# NEGROS 2012 ################################################
 
@@ -702,8 +768,71 @@ ggplot(data=dadosP, aes(x=Var1, y=Freq)) +
   xlab("Tipo") +
   theme_minimal()
 
+######################### negras e pardas
+
+NEGRO_e_Pardos <- G8_HM_2017 %>%  filter((TP_COR_RACA == 2 | TP_COR_RACA  == 3) & TP_SEXO == 1 )
+
+Brancas <- G8_HM_2017%>%  filter((TP_COR_RACA == 2 | TP_COR_RACA == 3 | TP_COR_RACA == 1 ) & TP_SEXO == 1 )
+
+sum(NEGRO_e_Pardos$TP_COR_RACA == "2")
+
+sum(NEGRO_e_Pardos$TP_COR_RACA == "3")
+
+sum(Brancas$TP_COR_RACA == 1)
+
+contagemNEGRO_2012 <- table(NEGRO_e_Pardos$TP_COR_RACA)
+
+nomesNEGRO_2012 <- levels(NEGRO_e_Pardos$TP_COR_RACA)
+
+porcentNEGRO_2012 <- round(prop.table(contagemNEGRO_2012)*100,2)
+
+rotuloNEGRO_2012 <- paste(nomesNEGRO_2012," (",porcentNEGRO_2012,"%",")",sep="")
+
+dadosNEGRO <- data.frame(round(prop.table(contagemNEGRO_2012)*100,2))
+
+dadosNEGRO <- within(dadosNEGRO, {
+  Var1 <- factor(Var1, labels=c('Negras','Pardas'))
+})
+
+attach(dadosNEGRO)
+dadosNEGRO <- dadosNEGRO[order(Freq),] 
+detach(dadosNEGRO)
+
+# Fora das Barras
+ggplot(data=dadosNEGRO, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
 
+##############   BRANCAS
+contagembranca<- table(Brancas$TP_COR_RACA)
+
+nomesbranca <- levels(Brancas$TP_COR_RACA)
+
+porcentbranca <- round(prop.table(contagembranca)*100,3)
+
+rotulobranca<- paste(nomesbranca," (",porcentbranca,"%",")",sep="")
+
+dadosbranca <- data.frame(round(prop.table(contagembranca)*100,2))
+
+dadosbranca<- within(dadosbranca, {
+  Var1 <- factor(Var1, labels=c('Branca', 'Negras','Pardas'))
+})
+
+attach(dadosbranca)
+dadosbranca <- dadosbranca[order(Freq),] 
+detach(dadosbranca)
+
+# Fora das Barras
+ggplot(data=dadosbranca, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(2,1,3))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
 
 
 

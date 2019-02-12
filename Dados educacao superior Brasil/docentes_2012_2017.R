@@ -161,6 +161,74 @@ ggplot(data=dadosR_2012, aes(x=Var1, y=Freq)) +
   xlab("Tipo") +
   theme_minimal()
 
+
+
+######################### negras e pardas
+
+NEGRO_e_Pardos <- docentes_2012 %>%  filter((CO_COR_RACA_DOCENTE == 2 | CO_COR_RACA_DOCENTE  == 3) & IN_SEXO_DOCENTE== 1 )
+
+Brancas <- docentes_2012%>%  filter((CO_COR_RACA_DOCENTE== 2 | CO_COR_RACA_DOCENTE== 3 | CO_COR_RACA_DOCENTE== 1 ) & IN_SEXO_DOCENTE == 1 )
+
+sum(NEGRO_e_Pardos$CO_COR_RACA_DOCENTE == "2")
+
+sum(NEGRO_e_Pardos$CO_COR_RACA_DOCENTE == "3")
+
+sum(Brancas$CO_COR_RACA_DOCENTE == 1)
+
+contagemNEGRO_2012 <- table(NEGRO_e_Pardos$CO_COR_RACA_DOCENTE)
+
+nomesNEGRO_2012 <- levels(NEGRO_e_Pardos$CO_COR_RACA_DOCENTE)
+
+porcentNEGRO_2012 <- round(prop.table(contagemNEGRO_2012)*100,2)
+
+rotuloNEGRO_2012 <- paste(nomesNEGRO_2012," (",porcentNEGRO_2012,"%",")",sep="")
+
+dadosNEGRO <- data.frame(round(prop.table(contagemNEGRO_2012)*100,2))
+
+dadosNEGRO <- within(dadosNEGRO, {
+  Var1 <- factor(Var1, labels=c('Negras','Pardas'))
+})
+
+attach(dadosNEGRO)
+dadosNEGRO <- dadosNEGRO[order(Freq),] 
+detach(dadosNEGRO)
+
+# Fora das Barras
+ggplot(data=dadosNEGRO, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
+
+##############   BRANCAS
+contagembranca<- table(Brancas$CO_COR_RACA_DOCENTE)
+
+nomesbranca <- levels(Brancas$CO_COR_RACA_DOCENTE)
+
+porcentbranca <- round(prop.table(contagembranca)*100,3)
+
+rotulobranca<- paste(nomesbranca," (",porcentbranca,"%",")",sep="")
+
+dadosbranca <- data.frame(round(prop.table(contagembranca)*100,2))
+
+dadosbranca<- within(dadosbranca, {
+  Var1 <- factor(Var1, labels=c('Branca', 'Negras','Pardas'))
+})
+
+attach(dadosbranca)
+dadosbranca <- dadosbranca[order(Freq),] 
+detach(dadosbranca)
+
+# Fora das Barras
+ggplot(data=dadosbranca, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(2,1,3))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
 ############################### Escolaridade - 2012 ################################################################
 
 escolaridade_2012 <- table(docentes_2017$TP_ESCOLARIDADE)
@@ -209,6 +277,86 @@ detach(dadosR_2012)
 # Fora das Barras
 ggplot(data=dadosR_2012, aes(x=Var1, y=Freq)) +
   geom_bar(stat="identity", fill= cor)+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
+
+
+############################# escolaridade
+
+#  1. Sem graduação
+# 2. Graduação
+# 3. Especialização
+# 4. Mestrado
+# 5. Doutorado
+
+
+# Sexo  2012
+# 0. Masculino
+# 1. Feminino
+
+NEGRO_e_Pardos <- docentes_2017 %>%  filter((TP_COR_RACA == 2 | TP_COR_RACA  == 3) & TP_SEXO== 1 & TP_ESCOLARIDADE == 5)
+
+Brancas <- docentes_2017 %>%  filter((TP_COR_RACA == 2 | TP_COR_RACA == 3 | TP_COR_RACA == 1 ) 
+                                    & TP_SEXO == 1 & TP_ESCOLARIDADE == 5)
+
+sum(NEGRO_e_Pardos$TP_COR_RACA == "2")
+
+sum(NEGRO_e_Pardos$TP_COR_RACA == "3")
+
+sum(Brancas$TP_COR_RACA == 1)
+
+contagemNEGRO_2012 <- table(NEGRO_e_Pardos$TP_COR_RACA)
+
+nomesNEGRO_2012 <- levels(NEGRO_e_Pardos$TP_COR_RACA)
+
+porcentNEGRO_2012 <- round(prop.table(contagemNEGRO_2012)*100,2)
+
+rotuloNEGRO_2012 <- paste(nomesNEGRO_2012," (",porcentNEGRO_2012,"%",")",sep="")
+
+dadosNEGRO <- data.frame(round(prop.table(contagemNEGRO_2012)*100,2))
+
+dadosNEGRO <- within(dadosNEGRO, {
+  Var1 <- factor(Var1, labels=c('Negras','Pardas'))
+})
+
+attach(dadosNEGRO)
+dadosNEGRO <- dadosNEGRO[order(Freq),] 
+detach(dadosNEGRO)
+
+# Fora das Barras
+ggplot(data=dadosNEGRO, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(1,2))+
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
+  ylab("Frequência") +
+  xlab("Tipo") +
+  theme_minimal()
+
+
+##############   BRANCAS escolaridade
+contagembranca<- table(Brancas$TP_COR_RACA)
+
+nomesbranca <- levels(Brancas$TP_COR_RACA)
+
+porcentbranca <- round(prop.table(contagembranca)*100,3)
+
+rotulobranca<- paste(nomesbranca," (",porcentbranca,"%",")",sep="")
+
+dadosbranca <- data.frame(round(prop.table(contagembranca)*100,2))
+
+dadosbranca<- within(dadosbranca, {
+  Var1 <- factor(Var1, labels=c('Branca', 'Negras','Pardas'))
+})
+
+attach(dadosbranca)
+dadosbranca <- dadosbranca[order(Freq),] 
+detach(dadosbranca)
+
+# Fora das Barras
+ggplot(data=dadosbranca, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill=c(2,1,3))+
   geom_text(aes(label=Freq), vjust=-0.3, size=3.5)+
   ylab("Frequência") +
   xlab("Tipo") +
