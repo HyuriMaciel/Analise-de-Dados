@@ -2,6 +2,8 @@
 Os projetos são desenvolvidos em liguagem R ou Python.
 
 <h2>Organização das pastas:</h2>
-* Analise de dados do ensino superior brasileiro 
-* Machine Learning: Técnicas classicas apredizagem de máquina 
+
+- Analise de dados do ensino superior brasileiro 
+
+- Machine Learning: Técnicas classicas apredizagem de máquina 
 
